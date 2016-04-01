@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/lbl_work_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/txt_work_name"
+        android:text="@string/lbl_work_name" />
+
+    <EditText
+        android:id="@+id/txt_work_name"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/lbl_work_name"
+        android:layout_toRightOf="@+id/lbl_work_name"
+        android:maxLines="1" />
+
+    <TextView
+        android:id="@+id/lbl_discipline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/spn_discipline"
+        android:layout_below="@+id/lbl_work_name"
+        android:text="@string/lbl_discipline" />
+
+    <Spinner
+        android:id="@+id/spn_discipline"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txt_work_name"
+        android:layout_alignStart="@+id/txt_work_name"
+        android:layout_below="@+id/txt_work_name"
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/lbl_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/txt_date"
+        android:text="@string/lbl_date" />
+
+    <TextView
+        android:id="@+id/txt_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/spn_discipline"
+        android:layout_alignStart="@+id/spn_discipline"
+        android:layout_below="@+id/spn_discipline"
+        android:layout_marginTop="8dp"
+        tools:text="30/03/2016" />
+
+    <TextView
+        android:id="@+id/lbl_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/txt_hour"
+        android:text="@string/lbl_hour" />
+
+    <TextView
+        android:id="@+id/txt_hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txt_date"
+        android:layout_alignStart="@+id/txt_date"
+        android:layout_below="@+id/txt_date"
+        android:layout_marginTop="8dp"
+        tools:text="12:00" />
+
+</RelativeLayout>

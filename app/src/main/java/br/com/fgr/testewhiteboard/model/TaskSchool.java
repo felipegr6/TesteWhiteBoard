@@ -1,4 +1,4 @@
-package br.com.fgr.testewhiteboard;
+package br.com.fgr.testewhiteboard.model;
 
 import java.util.Date;
 

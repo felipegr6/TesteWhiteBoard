@@ -1,4 +1,4 @@
-package br.com.fgr.testewhiteboard;
+package br.com.fgr.testewhiteboard.ui;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity implements DatePickerFragment.OnDateCallback,
+import br.com.fgr.testewhiteboard.R;
+
+public class Main2Activity extends AppCompatActivity implements DatePickerFragment.OnDateCallback,
         TimePickerFragment.OnTimeListener {
 
     @Override
@@ -14,7 +16,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerFragmen
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
 
     }
 

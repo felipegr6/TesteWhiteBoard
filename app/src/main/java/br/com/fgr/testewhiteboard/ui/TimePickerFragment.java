@@ -1,4 +1,4 @@
-package br.com.fgr.testewhiteboard;
+package br.com.fgr.testewhiteboard.ui;
 
 import android.app.Dialog;
 import android.app.DialogFragment;

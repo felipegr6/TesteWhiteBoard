@@ -1,4 +1,4 @@
-package br.com.fgr.testewhiteboard;
+package br.com.fgr.testewhiteboard.application;
 
 import android.app.Application;
 

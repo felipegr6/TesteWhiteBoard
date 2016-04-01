@@ -1,4 +1,4 @@
-package br.com.fgr.testewhiteboard;
+package br.com.fgr.testewhiteboard.ui;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
