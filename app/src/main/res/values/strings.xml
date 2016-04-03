@@ -16,4 +16,7 @@
     <string name="lbl_discipline">Disciplina</string>
     <string name="lbl_date">Data</string>
     <string name="lbl_hour">Hora</string>
+    <string name="title_add_task_school">Adicionar Tarefa</string>
+    <string name="lbl_grade">Nota</string>
+    <string name="btn_save">Salvar</string>
 </resources>

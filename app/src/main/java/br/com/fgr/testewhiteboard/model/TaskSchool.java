@@ -4,23 +4,26 @@ import java.util.Date;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 public class TaskSchool extends RealmObject {
 
     @PrimaryKey
-    private long id;
-
+    private String id;
+    @Required
     private String name;
-    private Discipline discipline;
+    @Required
     private Date date;
+
+    private Discipline discipline;
     private double grade;
     private boolean done;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

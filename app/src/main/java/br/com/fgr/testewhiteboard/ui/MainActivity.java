@@ -1,5 +1,6 @@
 package br.com.fgr.testewhiteboard.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -30,7 +32,10 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onClick(View view) {
-                new AddTaskSchoolFragment().show(getFragmentManager(), "");
+
+                Intent intent = new Intent(MainActivity.this, TaskSchoolActivity.class);
+                startActivity(intent);
+
             }
 
         });
@@ -43,23 +48,28 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
     public void onBackPressed() {
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+
+        if (drawer.isDrawerOpen(GravityCompat.START))
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        else
             super.onBackPressed();
-        }
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+
     }
 
     @Override
@@ -71,9 +81,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
             return true;
-        }
 
         return super.onOptionsItemSelected(item);
 
