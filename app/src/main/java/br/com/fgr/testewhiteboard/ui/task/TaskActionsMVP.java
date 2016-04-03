@@ -1,4 +1,4 @@
-package br.com.fgr.testewhiteboard.ui;
+package br.com.fgr.testewhiteboard.ui.task;
 
 import java.util.Date;
 import java.util.List;
@@ -23,7 +23,8 @@ public interface TaskActionsMVP {
 
         void addDiscipline(String discipline);
 
-        void addTask(String name, String discipline, Date date, double grade, boolean isDone);
+        void addTask(String id, String name, String discipline, Date date, double grade,
+                     boolean isDone);
 
     }
 
@@ -45,7 +46,8 @@ public interface TaskActionsMVP {
 
         void addDiscipline(String discipline);
 
-        void addTask(String name, String discipline, Date date, double grade, boolean isDone);
+        void addTask(String id, String name, String discipline, Date date, double grade,
+                     boolean isDone);
 
     }
 

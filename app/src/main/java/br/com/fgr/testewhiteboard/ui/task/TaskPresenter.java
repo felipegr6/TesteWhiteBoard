@@ -1,4 +1,4 @@
-package br.com.fgr.testewhiteboard.ui;
+package br.com.fgr.testewhiteboard.ui.task;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
@@ -43,8 +43,9 @@ public class TaskPresenter implements TaskActionsMVP.PresenterOperations,
     }
 
     @Override
-    public void addTask(String name, String discipline, Date date, double grade, boolean isDone) {
-        model.addTask(name, discipline, date, grade, isDone);
+    public void addTask(String id, String name, String discipline, Date date, double grade,
+                        boolean isDone) {
+        model.addTask(id, name, discipline, date, grade, isDone);
     }
 
 }

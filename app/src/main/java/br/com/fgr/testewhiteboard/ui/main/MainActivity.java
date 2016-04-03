@@ -1,28 +1,47 @@
-package br.com.fgr.testewhiteboard.ui;
+package br.com.fgr.testewhiteboard.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.fgr.testewhiteboard.R;
+import br.com.fgr.testewhiteboard.model.TaskSchool;
+import br.com.fgr.testewhiteboard.ui.task.TaskSchoolActivity;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        MainActionsMVP.RequiredViewOperations {
+
+    private MainActionsMVP.PresenterOperations presenter;
+
+    private RecyclerView listTasks;
+    private RecyclerView.LayoutManager mLayoutManager;
+
+    private List<TaskSchool> tasks;
+    private TaskSchoolAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        presenter = new MainPresenter(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -49,6 +68,38 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        listTasks = (RecyclerView) findViewById(R.id.list_tasks);
+        mLayoutManager = new LinearLayoutManager(this);
+        tasks = new ArrayList<>();
+
+        adapter = new TaskSchoolAdapter(tasks, new TaskSchoolAdapter.OnItemClick() {
+
+            @Override
+            public void onClick(TaskSchool task) {
+
+                Intent intent = new Intent(MainActivity.this, TaskSchoolActivity.class);
+
+                intent.putExtra("task", task);
+                startActivity(intent);
+
+            }
+
+        });
+
+        listTasks.setLayoutManager(mLayoutManager);
+        listTasks.setHasFixedSize(true);
+        listTasks.setItemAnimator(new DefaultItemAnimator());
+        listTasks.setAdapter(adapter);
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        presenter.retrieveTasks();
+
     }
 
     @Override
@@ -60,31 +111,6 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         else
             super.onBackPressed();
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
-            return true;
-
-        return super.onOptionsItemSelected(item);
 
     }
 
@@ -113,6 +139,20 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
 
+    }
+
+    @Override
+    public void populateDisciplines(List<TaskSchool> tasks) {
+
+        this.tasks.clear();
+        this.tasks.addAll(tasks);
+        adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onError(String message) {
+        Snackbar.make(findViewById(R.id.coordinator), message, Snackbar.LENGTH_SHORT).show();
     }
 
 }

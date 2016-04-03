@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,12 +22,12 @@
         </activity>
 
         <activity
-            android:name=".ui.TaskSchoolActivity"
+            android:name=".ui.task.TaskSchoolActivity"
             android:label="@string/title_add_task_school"
-            android:parentActivityName=".ui.MainActivity">
+            android:parentActivityName=".ui.main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.MainActivity" />
+                android:value=".ui.main.MainActivity" />
         </activity>
 
     </application>

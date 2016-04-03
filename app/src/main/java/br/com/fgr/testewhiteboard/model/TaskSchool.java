@@ -1,70 +1,61 @@
 package br.com.fgr.testewhiteboard.model;
 
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.Required;
+public class TaskSchool implements Serializable {
 
-public class TaskSchool extends RealmObject {
-
-    @PrimaryKey
     private String id;
-    @Required
     private String name;
-    @Required
     private Date date;
-
     private Discipline discipline;
     private double grade;
     private boolean done;
 
-    public String getId() {
-        return id;
+    public TaskSchool(String id, String name, Date date, Discipline discipline, double grade,
+                      boolean done) {
+
+        this.id = id;
+        this.name = name;
+        this.date = date;
+        this.discipline = discipline;
+        this.grade = grade;
+        this.done = done;
+
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Date getDate() {
+        return date;
     }
 
     public Discipline getDiscipline() {
         return discipline;
     }
 
-    public void setDiscipline(Discipline discipline) {
-        this.discipline = discipline;
+    public String getGrade() {
+
+        NumberFormat nf = new DecimalFormat("#0.00");
+
+        return nf.format(grade);
+
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public double getGrade() {
-        return grade;
-    }
-
-    public void setGrade(double grade) {
-        this.grade = grade;
+    public boolean isGradeZero() {
+        return grade == 0.0;
     }
 
     public boolean isDone() {
         return done;
-    }
-
-    public void setDone(boolean done) {
-        this.done = done;
     }
 
 }

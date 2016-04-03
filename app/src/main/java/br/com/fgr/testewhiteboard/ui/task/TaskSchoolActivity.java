@@ -1,4 +1,4 @@
-package br.com.fgr.testewhiteboard.ui;
+package br.com.fgr.testewhiteboard.ui.task;
 
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -21,6 +23,9 @@ import java.util.List;
 
 import br.com.fgr.testewhiteboard.R;
 import br.com.fgr.testewhiteboard.model.DateTimeHelper;
+import br.com.fgr.testewhiteboard.model.TaskSchool;
+import br.com.fgr.testewhiteboard.ui.DatePickerFragment;
+import br.com.fgr.testewhiteboard.ui.TimePickerFragment;
 
 public class TaskSchoolActivity extends AppCompatActivity implements DatePickerFragment.OnDateCallback,
         TimePickerFragment.OnTimeListener, TaskActionsMVP.RequiredViewOperations {
@@ -37,6 +42,7 @@ public class TaskSchoolActivity extends AppCompatActivity implements DatePickerF
     private EditText txtGrade;
     private CheckBox chkIsDone;
 
+    private TaskSchool taskSchool;
     private TaskActionsMVP.PresenterOperations presenter;
 
     @Override
@@ -51,6 +57,50 @@ public class TaskSchoolActivity extends AppCompatActivity implements DatePickerF
         txtHour = (EditText) findViewById(R.id.txt_hour);
         txtGrade = (EditText) findViewById(R.id.txt_grade);
         chkIsDone = (CheckBox) findViewById(R.id.chk_is_done);
+
+        if (getIntent() != null) {
+
+            taskSchool = (TaskSchool) getIntent().getSerializableExtra("task");
+
+            if (taskSchool != null) {
+
+                txtName.setText(taskSchool.getName());
+
+                DateTimeFormatter dtf1 = DateTimeFormat.forPattern("dd/MM/yyyy");
+                DateTimeFormatter dtf2 = DateTimeFormat.forPattern("HH:mm");
+                DateTime d = new DateTime(taskSchool.getDate());
+
+                txtDate.setText(dtf1.print(d));
+                txtHour.setText(dtf2.print(d));
+                txtGrade.setText(taskSchool.getGrade());
+                chkIsDone.setSelected(taskSchool.isDone());
+
+            } else {
+
+                DateTime dt = DateTime.now();
+
+                txtDate.setText(DateTimeHelper.dateFormatted(dt.getDayOfMonth(),
+                        dt.getMonthOfYear(), dt.getYear()));
+                txtHour.setText(DateTimeHelper.timeFormatted(dt.getHourOfDay(),
+                        dt.getMinuteOfHour()));
+
+            }
+
+        }
+
+        chkIsDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if (isChecked)
+                    txtGrade.setVisibility(View.VISIBLE);
+                else
+                    txtGrade.setVisibility(View.GONE);
+
+            }
+
+        });
 
         txtDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
@@ -83,11 +133,6 @@ public class TaskSchoolActivity extends AppCompatActivity implements DatePickerF
             }
 
         });
-
-        DateTime dt = DateTime.now();
-
-        txtDate.setText(DateTimeHelper.dateFormatted(dt.getDayOfMonth(), dt.getMonthOfYear(), dt.getYear()));
-        txtHour.setText(DateTimeHelper.timeFormatted(dt.getHourOfDay(), dt.getMinuteOfHour()));
 
         presenter = new TaskPresenter(this);
 
@@ -131,7 +176,7 @@ public class TaskSchoolActivity extends AppCompatActivity implements DatePickerF
     public void onTime(int id, int hour, int minute) {
 
         txtHour.setText(DateTimeHelper.timeFormatted(hour, minute));
-        txtGrade.requestFocus();
+        txtName.requestFocus();
 
     }
 
@@ -156,9 +201,10 @@ public class TaskSchoolActivity extends AppCompatActivity implements DatePickerF
             Log.e("parseDate", e.getMessage() + "");
         }
 
-        if (verifyFields(taskName, taskDiscipline, taskGrade)) {
-            presenter.addTask(taskName, taskDiscipline, taskDate.toDate(), taskGrade, isDone);
-        } else
+        if (verifyFields(taskName, taskDiscipline, taskGrade))
+            presenter.addTask(taskSchool == null ? "0" : taskSchool.getId(), taskName,
+                    taskDiscipline, taskDate.toDate(), taskGrade, isDone);
+        else
             Snackbar.make(findViewById(R.id.container), "Algo de Errado.",
                     Snackbar.LENGTH_SHORT).show();
 
@@ -175,7 +221,7 @@ public class TaskSchoolActivity extends AppCompatActivity implements DatePickerF
     }
 
     private double getGradeNumber(String taskGrade) {
-        return taskGrade.isEmpty() ? 0.0 : Double.parseDouble(taskGrade);
+        return taskGrade.isEmpty() ? 0.0 : Double.parseDouble(taskGrade.replace(",", "."));
     }
 
     @Override
@@ -187,6 +233,9 @@ public class TaskSchoolActivity extends AppCompatActivity implements DatePickerF
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spnDisciplines.setAdapter(adapter);
+
+        if (taskSchool != null)
+            spnDisciplines.setSelection(adapter.getPosition(taskSchool.getDiscipline().getName()));
 
     }
 
@@ -206,6 +255,7 @@ public class TaskSchoolActivity extends AppCompatActivity implements DatePickerF
         final EditText txtDiscipline = new EditText(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+        txtDiscipline.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         builder.setView(txtDiscipline);
         builder.setPositiveButton("Adicionar", new DialogInterface.OnClickListener() {
 
