@@ -1,8 +1,21 @@
 package br.com.fgr.testewhiteboard.ui.task;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.provider.CalendarContract;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
+
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import br.com.fgr.testewhiteboard.model.GenerateHashCode;
 import br.com.fgr.testewhiteboard.model.entities.DisciplineRealm;
@@ -76,8 +89,9 @@ public class TaskModel implements TaskActionsMVP.ModelOperations {
     }
 
     @Override
-    public void addTask(final String id, final String name, final String discipline, final Date date,
-                        final double grade, final boolean isDone) {
+    public void addTask(final Context context, final String id, final String name,
+                        final String discipline, final Date date, final double grade,
+                        final boolean isDone) {
 
         Realm realm = Realm.getDefaultInstance();
 
@@ -92,6 +106,7 @@ public class TaskModel implements TaskActionsMVP.ModelOperations {
 
                 if (task == null) {
 
+                    task = realm.createObject(TaskSchoolRealm.class);
                     disc = realm.where(DisciplineRealm.class)
                             .equalTo("name", discipline)
                             .findFirst();
@@ -108,8 +123,53 @@ public class TaskModel implements TaskActionsMVP.ModelOperations {
                     task.setGrade(grade);
                     task.setDone(isDone);
 
+                    DateTime dt = new DateTime(date);
+                    long startTime = dt.getMillis();
+                    long endTime = dt.plusHours(1).getMillis();
+
+                    ContentValues event = new ContentValues();
+
+                    event.put(CalendarContract.Events.CALENDAR_ID, 1);
+                    event.put(CalendarContract.Events.TITLE, String.format("%s - %s", name, discipline));
+                    event.put(CalendarContract.Events.DESCRIPTION, String.format("Atividade %s de %s", name, discipline));
+                    event.put(CalendarContract.Events.DTSTART, startTime);
+                    event.put(CalendarContract.Events.DTEND, endTime);
+                    event.put(CalendarContract.Events.HAS_ALARM, 1);
+                    event.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getAvailableIDs()[196]);
+
+                    Uri url;
+
+                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+
+                        ContentResolver cr = context.getContentResolver();
+                        url = context.getContentResolver().insert(CalendarContract.Events.CONTENT_URI, event);
+
+                        if (url != null) {
+
+                            Log.w("url", url.toString());
+
+                            task.setIdCalendar(Long.parseLong(url.getLastPathSegment()));
+
+                            for (int i = 1; i <= 7; i++) {
+
+                                Uri REMINDERS_URI = Uri.parse("content://" + url.getHost() + "/reminders");
+                                ContentValues values = new ContentValues();
+                                values.put(CalendarContract.Reminders.EVENT_ID, Long.parseLong(url.getLastPathSegment()));
+                                values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+                                values.put(CalendarContract.Reminders.MINUTES, i * 60 * 24);
+                                cr.insert(REMINDERS_URI, values);
+
+                            }
+
+                        }
+
+                    }
+
                 } catch (Exception e) {
+
+                    e.printStackTrace();
                     presenter.onError(e.getMessage() + "");
+
                 }
 
             }

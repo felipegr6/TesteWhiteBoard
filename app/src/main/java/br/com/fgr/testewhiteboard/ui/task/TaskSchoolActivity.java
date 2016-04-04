@@ -1,9 +1,13 @@
 package br.com.fgr.testewhiteboard.ui.task;
 
+import android.Manifest;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -95,8 +99,10 @@ public class TaskSchoolActivity extends AppCompatActivity implements DatePickerF
 
                 if (isChecked)
                     txtGrade.setVisibility(View.VISIBLE);
-                else
+                else {
+                    txtGrade.setText("0.00");
                     txtGrade.setVisibility(View.GONE);
+                }
 
             }
 
@@ -180,7 +186,36 @@ public class TaskSchoolActivity extends AppCompatActivity implements DatePickerF
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case 15:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    save();
+                else
+                    Snackbar.make(findViewById(R.id.container), "Algo de Errado.",
+                            Snackbar.LENGTH_SHORT).show();
+                break;
+        }
+
+
+    }
+
     public void saveChanges(View v) {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_CALENDAR, Manifest.permission.READ_CALENDAR}, 15);
+        else
+            save();
+
+    }
+
+    private void save() {
 
         String taskName = txtName.getText().toString();
         String taskDiscipline = spnDisciplines.getSelectedItem() != null ?
@@ -202,7 +237,7 @@ public class TaskSchoolActivity extends AppCompatActivity implements DatePickerF
         }
 
         if (verifyFields(taskName, taskDiscipline, taskGrade))
-            presenter.addTask(taskSchool == null ? "0" : taskSchool.getId(), taskName,
+            presenter.addTask(this, taskSchool == null ? "0" : taskSchool.getId(), taskName,
                     taskDiscipline, taskDate.toDate(), taskGrade, isDone);
         else
             Snackbar.make(findViewById(R.id.container), "Algo de Errado.",

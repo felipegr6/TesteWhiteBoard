@@ -1,5 +1,7 @@
 package br.com.fgr.testewhiteboard.ui.task;
 
+import android.content.Context;
+
 import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
@@ -42,10 +44,11 @@ public class TaskPresenter implements TaskActionsMVP.PresenterOperations,
         model.addDiscipline(discipline);
     }
 
+
     @Override
-    public void addTask(String id, String name, String discipline, Date date, double grade,
-                        boolean isDone) {
-        model.addTask(id, name, discipline, date, grade, isDone);
+    public void addTask(Context context, String id, String name, String discipline, Date date,
+                        double grade, boolean isDone) {
+        model.addTask(context, id, name, discipline, date, grade, isDone);
     }
 
 }

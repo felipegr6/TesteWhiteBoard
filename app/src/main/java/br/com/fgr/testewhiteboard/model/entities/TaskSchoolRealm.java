@@ -18,6 +18,7 @@ public class TaskSchoolRealm extends RealmObject {
     private DisciplineRealm discipline;
     private double grade;
     private boolean done;
+    private long idCalendar;
 
     public String getId() {
         return id;
@@ -65,6 +66,14 @@ public class TaskSchoolRealm extends RealmObject {
 
     public void setDone(boolean done) {
         this.done = done;
+    }
+
+    public long getIdCalendar() {
+        return idCalendar;
+    }
+
+    public void setIdCalendar(long idCalendar) {
+        this.idCalendar = idCalendar;
     }
 
 }
