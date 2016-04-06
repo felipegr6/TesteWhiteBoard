@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Date;
+import java.util.List;
 
 public class TaskSchool implements Serializable {
 
@@ -13,9 +14,10 @@ public class TaskSchool implements Serializable {
     private Discipline discipline;
     private double grade;
     private boolean done;
+    private List<Image> images;
 
     public TaskSchool(String id, String name, Date date, Discipline discipline, double grade,
-                      boolean done) {
+                      boolean done, List<Image> images) {
 
         this.id = id;
         this.name = name;
@@ -23,6 +25,7 @@ public class TaskSchool implements Serializable {
         this.discipline = discipline;
         this.grade = grade;
         this.done = done;
+        this.images = images;
 
     }
 
@@ -56,6 +59,10 @@ public class TaskSchool implements Serializable {
 
     public boolean isDone() {
         return done;
+    }
+
+    public List<Image> getImages() {
+        return images;
     }
 
 }

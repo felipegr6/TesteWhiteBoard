@@ -2,6 +2,7 @@ package br.com.fgr.testewhiteboard.model.entities;
 
 import java.util.Date;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
@@ -15,6 +16,7 @@ public class TaskSchoolRealm extends RealmObject {
     @Required
     private Date date;
 
+    private RealmList<ImageRealm> images;
     private DisciplineRealm discipline;
     private double grade;
     private boolean done;
@@ -74,6 +76,14 @@ public class TaskSchoolRealm extends RealmObject {
 
     public void setIdCalendar(long idCalendar) {
         this.idCalendar = idCalendar;
+    }
+
+    public RealmList<ImageRealm> getImages() {
+        return images;
+    }
+
+    public void setImages(RealmList<ImageRealm> images) {
+        this.images = images;
     }
 
 }

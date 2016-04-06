@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import br.com.fgr.testewhiteboard.model.entities.ImageRealm;
 import br.com.fgr.testewhiteboard.model.entities.TaskSchoolRealm;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -24,9 +25,14 @@ public final class DBHelper {
 
         for (TaskSchoolRealm task : results) {
 
+            List<Image> images = new ArrayList<>();
+
+            for (ImageRealm ir : task.getImages())
+                images.add(new Image(ir.getImage()));
+
             taskSchools.add(new TaskSchool(task.getId(), task.getName(), task.getDate(),
                     new Discipline(task.getDiscipline().getId(), task.getDiscipline().getName()),
-                    task.getGrade(), task.isDone()));
+                    task.getGrade(), task.isDone(), images));
 
         }
 

@@ -15,12 +15,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.fgr.testewhiteboard.R;
 import br.com.fgr.testewhiteboard.model.TaskSchool;
+import br.com.fgr.testewhiteboard.ui.done.DoneActivity;
 import br.com.fgr.testewhiteboard.ui.task.TaskSchoolActivity;
 
 public class MainActivity extends AppCompatActivity
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity
 
     private RecyclerView listTasks;
     private RecyclerView.LayoutManager mLayoutManager;
+    private TextView lblNullList;
 
     private List<TaskSchool> tasks;
     private TaskSchoolAdapter adapter;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        lblNullList = (TextView) findViewById(R.id.lbl_null_list);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
 
@@ -120,18 +124,12 @@ public class MainActivity extends AppCompatActivity
 
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Intent intent;
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_done) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
+            intent = new Intent(MainActivity.this, DoneActivity.class);
+            startActivity(intent);
 
         }
 
@@ -147,6 +145,18 @@ public class MainActivity extends AppCompatActivity
         this.tasks.clear();
         this.tasks.addAll(tasks);
         adapter.notifyDataSetChanged();
+
+        if (tasks.isEmpty()) {
+
+            listTasks.setVisibility(View.GONE);
+            lblNullList.setVisibility(View.VISIBLE);
+
+        } else {
+
+            listTasks.setVisibility(View.VISIBLE);
+            lblNullList.setVisibility(View.GONE);
+
+        }
 
     }
 

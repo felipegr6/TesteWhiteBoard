@@ -19,4 +19,8 @@
     <string name="title_add_task_school">Adicionar Tarefa</string>
     <string name="lbl_grade">Nota</string>
     <string name="btn_save">Salvar</string>
+    <string name="lbl_is_done">Já realizado?</string>
+    <string name="btn_add_photo">Adicionar Foto</string>
+    <string name="title_done_tasks">Tarefas Já Feitas</string>
+    <string name="msg_null_list">Não há dados para serem exibidos.</string>
 </resources>

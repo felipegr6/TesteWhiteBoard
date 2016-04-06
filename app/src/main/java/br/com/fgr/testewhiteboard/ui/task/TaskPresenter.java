@@ -30,6 +30,11 @@ public class TaskPresenter implements TaskActionsMVP.PresenterOperations,
     }
 
     @Override
+    public void onSuccessImages(List<String> images) {
+        view.get().populateImages(images);
+    }
+
+    @Override
     public void onError(String message) {
         view.get().onError(message);
     }
@@ -37,6 +42,16 @@ public class TaskPresenter implements TaskActionsMVP.PresenterOperations,
     @Override
     public void retrieveDisciplines() {
         model.retrieveDisciplines();
+    }
+
+    @Override
+    public void retrieveImages(String id) {
+        model.retrieveImages(id);
+    }
+
+    @Override
+    public void addImage(String id, String image) {
+        model.addImage(id, image);
     }
 
     @Override

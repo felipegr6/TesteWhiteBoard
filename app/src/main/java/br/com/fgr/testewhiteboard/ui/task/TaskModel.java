@@ -1,26 +1,22 @@
 package br.com.fgr.testewhiteboard.ui.task;
 
-import android.Manifest;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.provider.CalendarContract;
-import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import br.com.fgr.testewhiteboard.model.GenerateHashCode;
+import br.com.fgr.testewhiteboard.model.calendar.CalendarAbstract;
+import br.com.fgr.testewhiteboard.model.calendar.CalendarItem;
+import br.com.fgr.testewhiteboard.model.calendar.NativeCalendar;
 import br.com.fgr.testewhiteboard.model.entities.DisciplineRealm;
+import br.com.fgr.testewhiteboard.model.entities.ImageRealm;
 import br.com.fgr.testewhiteboard.model.entities.TaskSchoolRealm;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class TaskModel implements TaskActionsMVP.ModelOperations {
@@ -44,6 +40,41 @@ public class TaskModel implements TaskActionsMVP.ModelOperations {
             disciplines.add(d.getName());
 
         presenter.onSuccessDisciplines(disciplines);
+
+    }
+
+    @Override
+    public void retrieveImages(String id) {
+
+        Realm realm = Realm.getDefaultInstance();
+        List<String> images = new ArrayList<>();
+        TaskSchoolRealm task = realm.where(TaskSchoolRealm.class).equalTo("id", id).findFirst();
+
+        for (ImageRealm ir : task.getImages())
+            images.add(ir.getImage());
+
+        presenter.onSuccessImages(images);
+
+    }
+
+    @Override
+    public void addImage(String id, String image) {
+
+        Realm realm = Realm.getDefaultInstance();
+
+        TaskSchoolRealm taskSchool = realm.where(TaskSchoolRealm.class).equalTo("id", id).findFirst();
+        RealmList<ImageRealm> images = taskSchool.getImages();
+
+        realm.beginTransaction();
+
+        ImageRealm imageRealm = new ImageRealm();
+        imageRealm.setImage(image);
+
+        images.add(imageRealm);
+
+        realm.commitTransaction();
+
+        retrieveImages(id);
 
     }
 
@@ -93,6 +124,7 @@ public class TaskModel implements TaskActionsMVP.ModelOperations {
                         final String discipline, final Date date, final double grade,
                         final boolean isDone) {
 
+
         Realm realm = Realm.getDefaultInstance();
 
         realm.executeTransactionAsync(new Realm.Transaction() {
@@ -104,15 +136,21 @@ public class TaskModel implements TaskActionsMVP.ModelOperations {
                         equalTo("id", id).findFirst();
                 DisciplineRealm disc;
 
+                boolean isEdited;
+                long idCalendarItem;
+
                 if (task == null) {
 
                     task = realm.createObject(TaskSchoolRealm.class);
                     disc = realm.where(DisciplineRealm.class)
                             .equalTo("name", discipline)
                             .findFirst();
+                    isEdited = false;
 
-                } else
+                } else {
                     disc = task.getDiscipline();
+                    isEdited = true;
+                }
 
                 try {
 
@@ -123,47 +161,27 @@ public class TaskModel implements TaskActionsMVP.ModelOperations {
                     task.setGrade(grade);
                     task.setDone(isDone);
 
-                    DateTime dt = new DateTime(date);
-                    long startTime = dt.getMillis();
-                    long endTime = dt.plusHours(1).getMillis();
+                    DateTime startTime = new DateTime(date);
+                    DateTime endTime = startTime.plusHours(1);
 
-                    ContentValues event = new ContentValues();
+                    CalendarAbstract calendar = new NativeCalendar(context);
+                    CalendarItem calendarItem = new CalendarItem(name, discipline, startTime, endTime);
 
-                    event.put(CalendarContract.Events.CALENDAR_ID, 1);
-                    event.put(CalendarContract.Events.TITLE, String.format("%s - %s", name, discipline));
-                    event.put(CalendarContract.Events.DESCRIPTION, String.format("Atividade %s de %s", name, discipline));
-                    event.put(CalendarContract.Events.DTSTART, startTime);
-                    event.put(CalendarContract.Events.DTEND, endTime);
-                    event.put(CalendarContract.Events.HAS_ALARM, 1);
-                    event.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getAvailableIDs()[196]);
+                    if (isDone) {
 
-                    Uri url;
+                        calendar.deleteCalendarItem(task.getIdCalendar());
+                        idCalendarItem = 0;
 
-                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+                    } else {
 
-                        ContentResolver cr = context.getContentResolver();
-                        url = context.getContentResolver().insert(CalendarContract.Events.CONTENT_URI, event);
-
-                        if (url != null) {
-
-                            Log.w("url", url.toString());
-
-                            task.setIdCalendar(Long.parseLong(url.getLastPathSegment()));
-
-                            for (int i = 1; i <= 7; i++) {
-
-                                Uri REMINDERS_URI = Uri.parse("content://" + url.getHost() + "/reminders");
-                                ContentValues values = new ContentValues();
-                                values.put(CalendarContract.Reminders.EVENT_ID, Long.parseLong(url.getLastPathSegment()));
-                                values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
-                                values.put(CalendarContract.Reminders.MINUTES, i * 60 * 24);
-                                cr.insert(REMINDERS_URI, values);
-
-                            }
-
-                        }
+                        if (isEdited)
+                            idCalendarItem = calendar.updateCalendarItem(task.getIdCalendar(), calendarItem);
+                        else
+                            idCalendarItem = calendar.addCalendarItem(calendarItem);
 
                     }
+
+                    task.setIdCalendar(idCalendarItem);
 
                 } catch (Exception e) {
 

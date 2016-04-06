@@ -108,7 +108,7 @@
         android:layout_alignBaseline="@+id/chk_is_done"
         android:layout_below="@+id/lbl_hour"
         android:layout_marginTop="8dp"
-        android:text="Já realizado?" />
+        android:text="@string/lbl_is_done" />
 
     <CheckBox
         android:id="@+id/chk_is_done"

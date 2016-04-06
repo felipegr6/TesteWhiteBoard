@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.fgr.testewhiteboard.model.Discipline;
+import br.com.fgr.testewhiteboard.model.Image;
 import br.com.fgr.testewhiteboard.model.TaskSchool;
+import br.com.fgr.testewhiteboard.model.entities.ImageRealm;
 import br.com.fgr.testewhiteboard.model.entities.TaskSchoolRealm;
 import io.realm.Realm;
 
@@ -28,9 +30,14 @@ public class MainModel implements MainActionsMVP.ModelOperations {
 
         for (TaskSchoolRealm r : results) {
 
+            List<Image> images = new ArrayList<>();
+
+            for (ImageRealm ir : r.getImages())
+                images.add(new Image(ir.getImage()));
+
             tasks.add(new TaskSchool(r.getId(), r.getName(), r.getDate(),
                     new Discipline(r.getDiscipline().getId(), r.getDiscipline().getName()),
-                    r.getGrade(), r.isDone()));
+                    r.getGrade(), r.isDone(), images));
 
         }
 

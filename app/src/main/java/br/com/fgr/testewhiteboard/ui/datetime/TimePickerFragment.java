@@ -1,4 +1,4 @@
-package br.com.fgr.testewhiteboard.ui;
+package br.com.fgr.testewhiteboard.ui.datetime;
 
 import android.app.Dialog;
 import android.app.DialogFragment;

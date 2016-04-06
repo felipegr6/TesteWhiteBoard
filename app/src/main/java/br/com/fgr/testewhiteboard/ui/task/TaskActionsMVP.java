@@ -12,6 +12,8 @@ public interface TaskActionsMVP {
 
         void populateDisciplines(List<String> disciplines);
 
+        void populateImages(List<String> images);
+
         void goToMainActivity();
 
         void onError(String message);
@@ -22,6 +24,10 @@ public interface TaskActionsMVP {
     interface PresenterOperations {
 
         void retrieveDisciplines();
+
+        void retrieveImages(String id);
+
+        void addImage(String id, String image);
 
         void addDiscipline(String discipline);
 
@@ -37,6 +43,8 @@ public interface TaskActionsMVP {
 
         void onSuccessDisciplines(List<String> disciplines);
 
+        void onSuccessImages(List<String> images);
+
         void onError(String message);
 
     }
@@ -45,6 +53,10 @@ public interface TaskActionsMVP {
     interface ModelOperations {
 
         void retrieveDisciplines();
+
+        void retrieveImages(String id);
+
+        void addImage(String id, String image);
 
         void addDiscipline(String discipline);
 
