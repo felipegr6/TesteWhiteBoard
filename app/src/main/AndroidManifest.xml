@@ -41,6 +41,10 @@
                 android:value=".ui.main.MainActivity" />
         </activity>
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="ba90b4689d4bbea770bf29d7aa2687434014f50a" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

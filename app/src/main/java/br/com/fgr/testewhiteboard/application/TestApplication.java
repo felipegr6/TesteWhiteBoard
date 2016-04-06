@@ -2,6 +2,8 @@ package br.com.fgr.testewhiteboard.application;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import io.realm.Realm;
@@ -13,6 +15,7 @@ public class TestApplication extends Application {
     public void onCreate() {
 
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
 
         JodaTimeAndroid.init(this);
 
